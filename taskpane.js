@@ -140,3 +140,106 @@ function mostrarAviso(mensagem) {
     elemento.textContent = "";
   }, 5000);
 }
+
+/* ===================== Navegação por abas ===================== */
+(function () {
+  var abaPortais = document.getElementById("aba-portais");
+  var abaEmitir = document.getElementById("aba-emitir");
+  var conteudoPortais = document.getElementById("conteudo-portais");
+  var conteudoEmitir = document.getElementById("conteudo-emitir");
+
+  function ativar(aba, conteudo, outraAba, outroConteudo) {
+    aba.classList.add("aba--ativa");
+    aba.setAttribute("aria-selected", "true");
+    outraAba.classList.remove("aba--ativa");
+    outraAba.setAttribute("aria-selected", "false");
+    conteudo.hidden = false;
+    outroConteudo.hidden = true;
+  }
+
+  if (abaPortais && abaEmitir) {
+    abaPortais.addEventListener("click", function () {
+      ativar(abaPortais, conteudoPortais, abaEmitir, conteudoEmitir);
+    });
+    abaEmitir.addEventListener("click", function () {
+      ativar(abaEmitir, conteudoEmitir, abaPortais, conteudoPortais);
+    });
+  }
+})();
+
+/* ===================== Formulário NFS-e ===================== */
+(function () {
+  var form = document.getElementById("form-nfse");
+  if (!form) return;
+
+  var btnEmitir = document.getElementById("btn-emitir-nfse");
+  var resultadoDps = document.getElementById("resultado-dps");
+  var dpsOutput = document.getElementById("dps-output");
+  var btnCopiarDps = document.getElementById("btn-copiar-dps");
+
+  function urlApi() {
+    return document.getElementById("api-url").value.replace(/\/$/, "");
+  }
+
+  function coletarDados() {
+    var fd = new FormData(form);
+    return {
+      prestador_cnpj: fd.get("prestador_cnpj"),
+      prestador_inscricao_municipal: fd.get("prestador_inscricao_municipal"),
+      prestador_codigo_municipio: fd.get("prestador_codigo_municipio"),
+      tomador_cnpj: fd.get("tomador_cnpj"),
+      tomador_razao_social: fd.get("tomador_razao_social"),
+      tomador_email: fd.get("tomador_email") || null,
+      valor_servicos: parseFloat(fd.get("valor_servicos")),
+      aliquota_iss: parseFloat(fd.get("aliquota_iss")),
+      item_lista_servico: fd.get("item_lista_servico"),
+      discriminacao: fd.get("discriminacao"),
+      iss_retido: fd.get("iss_retido") === "on",
+      codigo_tributario_municipio: fd.get("codigo_tributario_municipio") || null,
+    };
+  }
+
+  // Gerar DPS (XML) — funciona já, só monta o XML
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var dados = coletarDados();
+
+    fetch(urlApi() + "/nfse/gerar-dps", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados),
+    })
+      .then(function (resp) {
+        if (!resp.ok) return resp.json().then(function (e) { throw e; });
+        return resp.json();
+      })
+      .then(function (data) {
+        dpsOutput.textContent = data.dps_xml;
+        resultadoDps.hidden = false;
+        mostrarAviso("DPS (XML) gerada com sucesso.");
+      })
+      .catch(function (err) {
+        mostrarAviso("Erro ao gerar DPS. Verifique se a API está acessível.");
+      });
+  });
+
+  // Emitir — preparado, mas avisa que precisa de certificado/hospedagem
+  if (btnEmitir) {
+    btnEmitir.addEventListener("click", function () {
+      if (!form.reportValidity()) return;
+      mostrarAviso(
+        "A emissão será ativada quando a API estiver hospedada e o " +
+        "certificado digital A1 configurado. Por ora, use 'Gerar DPS' para conferir o XML."
+      );
+    });
+  }
+
+  if (btnCopiarDps) {
+    btnCopiarDps.addEventListener("click", function () {
+      navigator.clipboard.writeText(dpsOutput.textContent).then(function () {
+        btnCopiarDps.textContent = "Copiado!";
+        setTimeout(function () { btnCopiarDps.textContent = "Copiar"; }, 2000);
+      });
+    });
+  }
+})();

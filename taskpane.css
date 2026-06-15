@@ -372,3 +372,134 @@ body {
   color: var(--azul);
   text-decoration: underline;
 }
+
+/* ===================== Navegação por abas ===================== */
+.abas {
+  display: flex;
+  border-bottom: 2px solid var(--linha);
+  background: #FFFFFF;
+}
+.aba {
+  flex: 1;
+  padding: 12px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-suave);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.aba:hover { color: var(--azul); }
+.aba--ativa {
+  color: var(--azul);
+  border-bottom-color: var(--amarelo);
+}
+
+/* ===================== Config API ===================== */
+.config-api { margin-bottom: 16px; }
+.config-api__dica {
+  font-size: 11px;
+  color: var(--tinta-suave);
+  margin: 4px 0 0;
+}
+
+/* ===================== Formulário NFS-e ===================== */
+.form-nfse { display: flex; flex-direction: column; gap: 14px; }
+.bloco {
+  border: 1px solid var(--linha);
+  border-radius: 6px;
+  padding: 12px;
+  margin: 0;
+}
+.bloco__titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--azul);
+  padding: 0 6px;
+}
+.campo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+.campo-form:last-child { margin-bottom: 0; }
+.campo-form > span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tinta);
+}
+.campo-form input,
+.campo-form textarea {
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--tinta);
+  border: 1px solid var(--linha);
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.campo-form input:focus,
+.campo-form textarea:focus {
+  outline: 2px solid var(--azul);
+  outline-offset: 1px;
+  border-color: var(--azul);
+}
+.campo-form textarea { resize: vertical; min-height: 54px; }
+.campo-form--check {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.campo-form--check input { width: auto; }
+.campo-form--check span { font-weight: 400; }
+
+.form-acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.form-acoes .btn-primario { flex: 1; }
+.btn-emitir {
+  flex: 1;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  color: #FFFFFF;
+  background: var(--verde-selo, #2F6F4E);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-emitir:hover { background: #25593E; }
+.btn-emitir:disabled { opacity: 0.6; cursor: default; }
+
+/* ===================== Resultado DPS ===================== */
+.resultado-dps { margin-top: 16px; }
+.resultado-dps__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.resultado-dps__cabecalho strong {
+  font-size: 13px;
+  color: var(--azul);
+}
+.resultado-dps pre {
+  background: #0D1B2A;
+  color: #E8F0F8;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 11px;
+  font-family: "Consolas", "Monaco", monospace;
+  margin: 0;
+  max-height: 280px;
+}

@@ -25,53 +25,147 @@
       </div>
     </header>
 
+    <nav class="abas" role="tablist">
+      <button class="aba aba--ativa" id="aba-portais" role="tab" aria-selected="true">Portais</button>
+      <button class="aba" id="aba-emitir" role="tab" aria-selected="false">Emitir NFS-e</button>
+    </nav>
+
     <main class="painel__conteudo">
 
-      <!-- ETAPA 1: seleção de estado -->
-      <section class="etapa etapa--estado" id="etapa-estado" aria-label="Selecione o estado">
-        <p class="painel__instrucao">
-          Selecione o estado (UF) para acessar o Portal do Contribuinte
-          da SEFAZ correspondente.
-        </p>
-        <label class="campo-uf">
-          <span class="campo-uf__rotulo">Estado (UF)</span>
-          <select id="select-uf" class="campo-uf__select">
-            <option value="">— Selecione —</option>
-          </select>
-        </label>
-        <button id="btn-continuar" class="btn-primario" disabled>Continuar</button>
-      </section>
+      <!-- ===================== ABA 1: PORTAIS ===================== -->
+      <div class="painel-aba" id="conteudo-portais">
 
-      <!-- ETAPA 2: portal do contribuinte (oculta até escolher estado) -->
-      <section class="etapa etapa--portais" id="etapa-portais" aria-label="Portal do contribuinte" hidden>
-        <div class="estado-selecionado">
-          <span class="estado-selecionado__label">Estado:</span>
-          <strong id="uf-atual" class="estado-selecionado__uf"></strong>
-          <button id="btn-trocar-uf" class="btn-trocar">trocar</button>
+        <!-- ETAPA 1: seleção de estado -->
+        <section class="etapa etapa--estado" id="etapa-estado" aria-label="Selecione o estado">
+          <p class="painel__instrucao">
+            Selecione o estado (UF) para acessar o Portal do Contribuinte
+            da SEFAZ correspondente.
+          </p>
+          <label class="campo-uf">
+            <span class="campo-uf__rotulo">Estado (UF)</span>
+            <select id="select-uf" class="campo-uf__select">
+              <option value="">— Selecione —</option>
+            </select>
+          </label>
+          <button id="btn-continuar" class="btn-primario" disabled>Continuar</button>
+        </section>
+
+        <!-- ETAPA 2: portal do contribuinte (oculta até escolher estado) -->
+        <section class="etapa etapa--portais" id="etapa-portais" aria-label="Portal do contribuinte" hidden>
+          <div class="estado-selecionado">
+            <span class="estado-selecionado__label">Estado:</span>
+            <strong id="uf-atual" class="estado-selecionado__uf"></strong>
+            <button id="btn-trocar-uf" class="btn-trocar">trocar</button>
+          </div>
+
+          <button class="atalho atalho--portal" id="btn-portal">
+            <span class="atalho__icone" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18" />
+                <path d="M5 21V10l7-5 7 5v11" />
+                <path d="M9 21v-6h6v6" />
+              </svg>
+            </span>
+            <span class="atalho__rotulo">
+              <strong>Portal do Contribuinte</strong>
+              <span class="atalho__descricao">Acesso aos serviços da SEFAZ</span>
+            </span>
+            <span class="atalho__seta" aria-hidden="true">↗</span>
+          </button>
+        </section>
+      </div>
+
+      <!-- ===================== ABA 2: EMITIR NFS-e ===================== -->
+      <div class="painel-aba" id="conteudo-emitir" hidden>
+
+        <div class="config-api">
+          <label class="campo-uf__rotulo" for="api-url">Endereço da API</label>
+          <input type="text" id="api-url" class="campo-uf__select" value="http://localhost:8000" />
+          <p class="config-api__dica">Aponte para o endereço onde a API está hospedada.</p>
         </div>
 
-        <button class="atalho atalho--portal" id="btn-portal">
-          <span class="atalho__icone" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 21h18" />
-              <path d="M5 21V10l7-5 7 5v11" />
-              <path d="M9 21v-6h6v6" />
-            </svg>
-          </span>
-          <span class="atalho__rotulo">
-            <strong>Portal do Contribuinte</strong>
-            <span class="atalho__descricao">Acesso aos serviços da SEFAZ</span>
-          </span>
-          <span class="atalho__seta" aria-hidden="true">↗</span>
-        </button>
-      </section>
+        <form id="form-nfse" class="form-nfse">
+          <fieldset class="bloco">
+            <legend class="bloco__titulo">Prestador (sua empresa)</legend>
+            <label class="campo-form">
+              <span>CNPJ *</span>
+              <input name="prestador_cnpj" placeholder="00000000000000" required />
+            </label>
+            <label class="campo-form">
+              <span>Inscrição Municipal *</span>
+              <input name="prestador_inscricao_municipal" placeholder="123456" required />
+            </label>
+            <label class="campo-form">
+              <span>Código do Município (IBGE) *</span>
+              <input name="prestador_codigo_municipio" placeholder="3550308" required />
+            </label>
+          </fieldset>
+
+          <fieldset class="bloco">
+            <legend class="bloco__titulo">Tomador (cliente)</legend>
+            <label class="campo-form">
+              <span>CNPJ *</span>
+              <input name="tomador_cnpj" placeholder="11111111000111" required />
+            </label>
+            <label class="campo-form">
+              <span>Razão Social *</span>
+              <input name="tomador_razao_social" placeholder="Empresa Cliente LTDA" required />
+            </label>
+            <label class="campo-form">
+              <span>E-mail</span>
+              <input type="email" name="tomador_email" placeholder="cliente@exemplo.com" />
+            </label>
+          </fieldset>
+
+          <fieldset class="bloco">
+            <legend class="bloco__titulo">Serviço</legend>
+            <label class="campo-form">
+              <span>Valor dos Serviços (R$) *</span>
+              <input type="number" name="valor_servicos" step="0.01" min="0.01" placeholder="1000.00" required />
+            </label>
+            <label class="campo-form">
+              <span>Alíquota ISS (%) *</span>
+              <input type="number" name="aliquota_iss" step="0.01" min="0" max="100" placeholder="5" required />
+            </label>
+            <label class="campo-form">
+              <span>Código do Serviço *</span>
+              <input name="item_lista_servico" placeholder="010701" required />
+            </label>
+            <label class="campo-form">
+              <span>Código Tributário Município</span>
+              <input name="codigo_tributario_municipio" placeholder="(opcional)" />
+            </label>
+            <label class="campo-form">
+              <span>Discriminação do Serviço *</span>
+              <textarea name="discriminacao" placeholder="Descrição dos serviços" required></textarea>
+            </label>
+            <label class="campo-form campo-form--check">
+              <input type="checkbox" name="iss_retido" />
+              <span>ISS retido pelo tomador</span>
+            </label>
+          </fieldset>
+
+          <div class="form-acoes">
+            <button type="submit" class="btn-primario">Gerar DPS (XML)</button>
+            <button type="button" id="btn-emitir-nfse" class="btn-emitir">Emitir</button>
+          </div>
+        </form>
+
+        <div class="resultado-dps" id="resultado-dps" hidden>
+          <div class="resultado-dps__cabecalho">
+            <strong>DPS gerada (XML)</strong>
+            <button type="button" id="btn-copiar-dps" class="btn-trocar">Copiar</button>
+          </div>
+          <pre id="dps-output"></pre>
+        </div>
+      </div>
 
       <p class="painel__rodape-aviso" id="aviso" role="status" aria-live="polite"></p>
     </main>
 
     <footer class="painel__rodape">
       <span class="painel__rodape-info">Portais oficiais das SEFAZ</span>
-      <span class="painel__versao">v1.2.0</span>
+      <span class="painel__versao">v1.3.0</span>
     </footer>
   </div>
 
