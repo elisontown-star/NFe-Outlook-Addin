@@ -7,7 +7,7 @@
   xsi:type="MailApp">
 
   <Id>f35ac15d-65aa-4119-aef3-30f2fcf899cf</Id>
-  <Version>1.0.0.0</Version>
+  <Version>1.0.3.0</Version>
   <ProviderName>Sua Empresa</ProviderName>
   <DefaultLocale>pt-BR</DefaultLocale>
   <DisplayName DefaultValue="Emissor de NF"/>

@@ -235,8 +235,16 @@ body {
 .painel__rodape {
   border-top: 1px solid var(--linha);
   padding: 12px 20px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: #FFFFFF;
+}
+
+.painel__versao {
+  font-size: 11px;
+  color: var(--tinta-suave);
+  font-variant-numeric: tabular-nums;
 }
 
 .painel__link-config {
