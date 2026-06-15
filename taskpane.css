@@ -113,6 +113,106 @@ body {
   color: var(--tinta-suave);
 }
 
+/* Etapa 1 — seleção de estado --------------------------------------- */
+
+.etapa {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.campo-uf {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo-uf__rotulo {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.campo-uf__select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--tinta);
+  background: #FFFFFF;
+  border: 1px solid var(--linha);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.campo-uf__select:focus {
+  outline: 2px solid var(--azul);
+  outline-offset: 1px;
+  border-color: var(--azul);
+}
+
+.btn-primario {
+  width: 100%;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  color: #FFFFFF;
+  background: var(--azul);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-primario:hover:not(:disabled) {
+  background: var(--azul-hover);
+}
+
+.btn-primario:disabled {
+  background: #B8C4D0;
+  cursor: not-allowed;
+}
+
+/* Etapa 2 — pílula de estado selecionado ---------------------------- */
+
+.estado-selecionado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--azul-claro);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.estado-selecionado__label {
+  color: var(--tinta-suave);
+}
+
+.estado-selecionado__uf {
+  color: var(--azul);
+  flex: 1;
+}
+
+.btn-trocar {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--azul);
+  background: transparent;
+  border: 1px solid var(--azul);
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-trocar:hover {
+  background: var(--azul);
+  color: #FFFFFF;
+}
+
 .lista-atalhos {
   display: flex;
   flex-direction: column;
@@ -255,6 +355,11 @@ body {
   font-size: 11px;
   color: var(--tinta-suave);
   font-variant-numeric: tabular-nums;
+}
+
+.painel__rodape-info {
+  font-size: 11px;
+  color: var(--tinta-suave);
 }
 
 .painel__link-config {

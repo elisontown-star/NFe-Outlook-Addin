@@ -1,74 +1,153 @@
 /*
-  Lógica do painel: cada botão abre o portal oficial correspondente
-  em uma nova janela.
+  Add-in Emissor de NF — seleção de estado + atalhos para portais oficiais.
 
-  Por que displayDialogAsync e não window.open:
-  - No Outlook Desktop (Windows/Mac), o task pane roda em um WebView
-    isolado. window.open costuma ser bloqueado ou simplesmente não
-    abre uma janela do sistema.
-  - Office.context.ui.displayDialogAsync é a API suportada pela
-    plataforma Office para abrir uma janela de diálogo a partir de um
-    add-in, funcionando de forma consistente no Desktop e na Web.
-  - A janela de diálogo carrega a URL informada; o usuário pode
-    navegar normalmente dentro dela (login gov.br, certificado, etc.).
-    Ela NÃO está dentro de um iframe controlado pelo add-in — é uma
-    janela própria do sistema operacional/navegador.
+  Fluxo:
+  1. Usuário escolhe a UF (etapa 1)
+  2. Aparecem os botões NF-e / NFC-e / NFS-e (etapa 2)
+  3. NF-e e NFC-e abrem o portal da SEFAZ daquele estado
+     NFS-e abre o Emissor Nacional (nacional, não varia por estado)
+
+  Abertura das janelas:
+  - Usa Office.context.ui.displayDialogAsync (pop-up dentro do Office).
+  - Alguns portais bloqueiam ser exibidos em diálogo/iframe
+    (X-Frame-Options); nesse caso o código cai para window.open.
+
+  COMO EXPANDIR: adicione novos estados ao objeto PORTAIS abaixo,
+  seguindo o mesmo formato { nfe, nfce }. A NFS-e é nacional e fica
+  em PORTAL_NFSE.
 */
 
-// Edite estas URLs para apontar para os portais corretos da sua operação.
-// NF-e e NFC-e variam por estado; ajuste para a SEFAZ do seu UF.
+// Portal nacional da NFS-e (Emissor Nacional) — igual para todos os estados.
+var PORTAL_NFSE = "https://www.nfse.gov.br/EmissorNacional/";
+
+// Portais oficiais das SEFAZ, por UF.
+// nfe  = portal de NF-e do estado
+// nfce = portal de NFC-e do estado
 var PORTAIS = {
-  nfe: "https://www.nfe.fazenda.gov.br/portal/principal.aspx",
-  nfce: "https://www.nfce.fazenda.gov.br/portal/principal.aspx",
-  nfse: "https://www.nfse.gov.br/EmissorNacional/",
+  SP: {
+    nome: "São Paulo",
+    nfe: "https://portal.fazenda.sp.gov.br/servicos/nfe",
+    nfce: "https://portal.fazenda.sp.gov.br/servicos/nfce",
+  },
+  RJ: {
+    nome: "Rio de Janeiro",
+    nfe: "https://portal.fazenda.rj.gov.br/dfe/",
+    nfce: "https://portal.fazenda.rj.gov.br/dfe/",
+  },
+  MG: {
+    nome: "Minas Gerais",
+    nfe: "https://portalsped.fazenda.mg.gov.br/spedmg/nfe/",
+    nfce: "https://portalsped.fazenda.mg.gov.br/spedmg/nfce/",
+  },
+  RS: {
+    nome: "Rio Grande do Sul",
+    nfe: "https://dfe-portal.svrs.rs.gov.br/NFE",
+    nfce: "https://dfe-portal.svrs.rs.gov.br/NFCE",
+  },
+  PR: {
+    nome: "Paraná",
+    nfe: "https://www.fazenda.pr.gov.br/servicos/EMPRESA/Nota-Fiscal-Eletronica-NF-e",
+    nfce: "https://www.fazenda.pr.gov.br/servicos/EMPRESA/Nota-Fiscal-de-Consumidor-Eletronica-NFC-e",
+  },
+  SC: {
+    nome: "Santa Catarina",
+    nfe: "https://sat.sef.sc.gov.br/tax.NET/Sat.Dfe.Web/Default.aspx",
+    nfce: "https://sat.sef.sc.gov.br/nfce/consulta",
+  },
+  BA: {
+    nome: "Bahia",
+    nfe: "https://nfe.sefaz.ba.gov.br/servicos/nfe/default.aspx",
+    nfce: "https://nfe.sefaz.ba.gov.br/servicos/nfce/Modulos/Geral/NFCEC_consulta_chave_acesso.aspx",
+  },
 };
 
+// Ordem de exibição no dropdown
+var ORDEM_UF = ["SP", "RJ", "MG", "RS", "PR", "SC", "BA"];
+
+var ufSelecionada = null;
+
 Office.onReady(function () {
+  popularSelectUf();
+
+  var select = document.getElementById("select-uf");
+  var btnContinuar = document.getElementById("btn-continuar");
+  var btnTrocar = document.getElementById("btn-trocar-uf");
+
+  select.addEventListener("change", function () {
+    btnContinuar.disabled = !select.value;
+  });
+
+  btnContinuar.addEventListener("click", function () {
+    if (select.value) {
+      ufSelecionada = select.value;
+      mostrarEtapaPortais();
+    }
+  });
+
+  btnTrocar.addEventListener("click", function () {
+    mostrarEtapaEstado();
+  });
+
+  // Liga os botões de portal
   var botoes = document.querySelectorAll(".atalho");
   for (var i = 0; i < botoes.length; i++) {
     botoes[i].addEventListener("click", function () {
-      var tipo = this.getAttribute("data-portal");
-      abrirPortal(tipo);
+      abrirPortal(this.getAttribute("data-portal"));
     });
   }
-
-  var linkConfigurar = document.getElementById("link-configurar");
-  linkConfigurar.addEventListener("click", function (evento) {
-    evento.preventDefault();
-    mostrarAviso(
-      "Para alterar os portais, edite o arquivo taskpane.js (objeto PORTAIS)."
-    );
-  });
 });
 
+function popularSelectUf() {
+  var select = document.getElementById("select-uf");
+  for (var i = 0; i < ORDEM_UF.length; i++) {
+    var uf = ORDEM_UF[i];
+    var opt = document.createElement("option");
+    opt.value = uf;
+    opt.textContent = uf + " — " + PORTAIS[uf].nome;
+    select.appendChild(opt);
+  }
+}
+
+function mostrarEtapaPortais() {
+  document.getElementById("etapa-estado").hidden = true;
+  document.getElementById("etapa-portais").hidden = false;
+  document.getElementById("uf-atual").textContent =
+    ufSelecionada + " — " + PORTAIS[ufSelecionada].nome;
+}
+
+function mostrarEtapaEstado() {
+  document.getElementById("etapa-portais").hidden = true;
+  document.getElementById("etapa-estado").hidden = false;
+}
+
 function abrirPortal(tipo) {
-  var url = PORTAIS[tipo];
+  var url;
+
+  if (tipo === "nfse") {
+    // NFS-e é nacional
+    url = PORTAL_NFSE;
+  } else if (ufSelecionada && PORTAIS[ufSelecionada]) {
+    url = PORTAIS[ufSelecionada][tipo];
+  }
 
   if (!url) {
-    mostrarAviso("Portal não configurado para este tipo de nota.");
+    mostrarAviso("Portal não disponível para este estado/tipo.");
     return;
   }
 
-  // displayDialogAsync exige HTTPS e que o domínio esteja listado em
-  // <AppDomains> no manifest.xml, ou que o usuário aceite a navegação
-  // dependendo da política do tenant.
   Office.context.ui.displayDialogAsync(
     url,
     { height: 80, width: 70, displayInIframe: false },
     function (resultado) {
       if (resultado.status === Office.AsyncResultStatus.Failed) {
-        // Fallback: caso o diálogo não possa ser aberto (algumas
-        // configurações de tenant bloqueiam displayDialogAsync para
-        // domínios externos), tenta abrir em nova aba do navegador.
-        var novaJanela = window.open(url, "_blank");
-        if (!novaJanela) {
-          mostrarAviso("Não foi possível abrir o portal. Copie o link: " + url);
+        var nova = window.open(url, "_blank");
+        if (!nova) {
+          mostrarAviso("Não foi possível abrir. Link: " + url);
         } else {
           mostrarAviso("Portal aberto em nova aba.");
         }
         return;
       }
-
       mostrarAviso("Portal aberto em nova janela.");
     }
   );
@@ -78,7 +157,6 @@ var timeoutAviso;
 function mostrarAviso(mensagem) {
   var elemento = document.getElementById("aviso");
   elemento.textContent = mensagem;
-
   clearTimeout(timeoutAviso);
   timeoutAviso = setTimeout(function () {
     elemento.textContent = "";
