@@ -5,7 +5,7 @@
   apontando para auth.html com MSAL redirect tradicional).
 
   Uso no taskpane.js:
-    import { obterContaAtiva, login, obterTokenApi } from "../auth/auth.js";
+    import { obterContaAtiva, login, obterTokenApi } from "./auth.js";
 */
 
 let msalInstance;
@@ -78,7 +78,7 @@ export async function obterTokenApi() {
 function loginViaDialogoFallback() {
   return new Promise((resolve, reject) => {
     Office.context.ui.displayDialogAsync(
-      `https://${DOMINIO_ADDIN}/src/auth/auth.html`,
+      `https://${DOMINIO_ADDIN}/auth.html`,
       { height: 60, width: 40 },
       (resultado) => {
         if (resultado.status === Office.AsyncResultStatus.Failed) {

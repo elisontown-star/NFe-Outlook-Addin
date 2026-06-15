@@ -16,22 +16,32 @@ plataforma Office.
 ## Estrutura
 
 ```
-nfe-outlook-addin/
-├── manifest.xml              # Manifest do add-in (XML, formato clássico)
-└── src/
-    ├── taskpane/
-    │   ├── taskpane.html      # Painel exibido no Outlook
-    │   ├── taskpane.css       # Estilos
-    │   └── taskpane.js        # Lógica dos botões / abertura dos portais
-    └── commands/
-        └── commands.html      # Function file exigido pelo manifest
+NFe-Outlook-Addin/
+├── manifest.xml        # Manifest do add-in (XML, formato clássico)
+├── taskpane.html        # Painel exibido no Outlook
+├── taskpane.css         # Estilos
+├── taskpane.js          # Lógica dos botões / abertura dos portais
+├── commands.html        # Function file exigido pelo manifest
+├── auth.html            # Fallback de login (diálogo MSAL)
+├── auth.js              # Lógica de login NAA / MSAL
+├── authConfig.js        # Configuração MSAL (client ID, tenant ID, etc.)
+└── assets/
+    ├── icon.svg
+    ├── icon-16.png
+    ├── icon-32.png
+    ├── icon-64.png
+    ├── icon-80.png
+    └── icon-128.png
 ```
+
+Estrutura plana (sem subpastas) propositalmente, para facilitar o upload
+direto ao GitHub e a hospedagem via GitHub Pages na raiz do repositório.
 
 ## 0. Autenticação (SSO via Nested App Authentication)
 
 A Microsoft está descontinuando o SSO legado dos add-ins do Outlook em
 favor do **NAA (Nested App Authentication)**, usando MSAL.js. Os arquivos
-em `src/auth/` já implementam esse fluxo, com fallback para diálogo em
+em os arquivos de autenticação (`auth.js`, `auth.html`, `authConfig.js`) já implementam esse fluxo, com fallback para diálogo em
 hosts mais antigos.
 
 ### Dados já configurados neste projeto
@@ -40,7 +50,7 @@ hosts mais antigos.
 - **Tenant ID**: `51873eff-cfd8-4715-839f-10a25cdcbec9`
 - **Domínio (GitHub Pages)**: `elisontown-star.github.io/NFe-Outlook-Addin`
 
-Esses valores já estão preenchidos em `src/auth/authConfig.js` e em
+Esses valores já estão preenchidos em `authConfig.js` e em
 `manifest.xml`.
 
 ### Checklist no App Registration (Entra ID)
@@ -50,7 +60,7 @@ Registros de aplicativo), confirme:
 
 1. **Autenticação** → plataforma **SPA**, com as seguintes Redirect URIs:
    - `brk-multihub://elisontown-star.github.io/NFe-Outlook-Addin`
-   - `https://elisontown-star.github.io/NFe-Outlook-Addin/src/auth/auth.html`
+   - `https://elisontown-star.github.io/NFe-Outlook-Addin/auth.html`
 2. **Permissões de API**: `User.Read`, `openid`, `profile` (Microsoft
    Graph) — vêm por padrão.
 3. (Opcional, para autenticar chamadas à sua API NFe) em **Expose an
@@ -65,16 +75,16 @@ Registros de aplicativo), confirme:
   NAA (sem pedir login novamente).
 - Se não houver sessão, exibe um botão **Entrar** que dispara o
   `acquireTokenPopup` (NAA) ou, em hosts sem suporte, abre
-  `src/auth/auth.html` em um diálogo do Office com o fluxo MSAL
+  `auth.html` em um diálogo do Office com o fluxo MSAL
   tradicional (`loginRedirect`).
 - O e-mail/nome do usuário aparece no cabeçalho do painel.
-- `obterTokenApi()` (em `src/auth/auth.js`) retorna um access token para
+- `obterTokenApi()` (em `auth.js`) retorna um access token para
   o `API_SCOPE` configurado, pronto para autenticar chamadas à sua API
   NFe (Focus NFe) em nome do usuário logado.
 
 ## 1. Configurar os links dos portais
 
-Edite `src/taskpane/taskpane.js`, objeto `PORTAIS`:
+Edite `taskpane.js`, objeto `PORTAIS`:
 
 ```js
 const PORTAIS = {
@@ -101,7 +111,7 @@ Para publicar via GitHub Pages:
    branch` → Branch: `main` / pasta `/ (root)` → **Save**.
 3. Aguarde alguns minutos; o site ficará disponível em
    `https://elisontown-star.github.io/NFe-Outlook-Addin/`.
-4. Adicione os ícones (16/32/80/64/128px) em `src/taskpane/assets/`
+4. Adicione os ícones (16/32/80/64/128px) em `assets/`
    com os nomes `icon-16.png`, `icon-32.png`, `icon-80.png`,
    `icon-64.png`, `icon-128.png` — o manifest já referencia esses
    caminhos.

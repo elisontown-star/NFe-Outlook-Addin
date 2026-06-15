@@ -15,7 +15,7 @@
     janela própria do sistema operacional/navegador.
 */
 
-import { obterContaAtiva, login } from "../auth/auth.js";
+import { obterContaAtiva, login } from "./auth.js";
 
 // Edite estas URLs para apontar para os portais corretos da sua operação.
 // NF-e e NFC-e variam por estado; ajuste para a SEFAZ do seu UF.

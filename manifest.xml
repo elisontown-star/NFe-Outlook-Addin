@@ -41,7 +41,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/src/taskpane/taskpane.html" />
+        <SourceLocation DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/taskpane.html" />
       </DesktopSettings>
     </Form>
   </FormSettings>
@@ -109,8 +109,8 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-80.png" />
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/src/commands/commands.html" />
-        <bt:Url id="Taskpane.Url" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/src/taskpane/taskpane.html" />
+        <bt:Url id="Commands.Url" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/commands.html" />
+        <bt:Url id="Taskpane.Url" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/taskpane.html" />
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="NfeGroup.Label" DefaultValue="Notas Fiscais" />
