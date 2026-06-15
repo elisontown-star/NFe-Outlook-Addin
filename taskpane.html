@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emissor de NF</title>
+
+  <!-- Office JS é obrigatório em qualquer task pane -->
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+  <!-- MSAL.js: usado para SSO via Nested App Authentication (NAA) -->
+  <script src="https://alcdn.msauth.net/browser/3.18.0/js/msal-browser.min.js"
+          integrity="sha384-placeholder-verifique-o-hash-atual"
+          crossorigin="anonymous"></script>
+  <script src="../auth/authConfig.js"></script>
+
+  <link rel="stylesheet" href="taskpane.css" />
+</head>
+<body>
+  <div class="painel">
+    <header class="painel__cabecalho">
+      <div class="painel__marca">
+        <span class="painel__selo">NF</span>
+        <div>
+          <h1 class="painel__titulo">Emissor de Nota Fiscal</h1>
+          <p class="painel__subtitulo">Atalhos para os portais oficiais</p>
+        </div>
+      </div>
+      <div class="painel__usuario" id="painel-usuario">
+        <span id="usuario-status">Verificando sessão...</span>
+        <button id="botao-entrar" class="botao-entrar" hidden>Entrar</button>
+      </div>
+    </header>
+
+    <main class="painel__conteudo">
+      <p class="painel__instrucao">
+        Escolha o tipo de documento fiscal. Cada opção abre o portal
+        oficial correspondente em uma nova janela.
+      </p>
+
+      <section class="lista-atalhos" aria-label="Tipos de nota fiscal">
+
+        <button class="atalho" data-portal="nfe">
+          <span class="atalho__rotulo">
+            <strong>NF-e</strong>
+            <span class="atalho__descricao">Nota Fiscal Eletrônica — produtos</span>
+          </span>
+          <span class="atalho__seta" aria-hidden="true">↗</span>
+        </button>
+
+        <button class="atalho" data-portal="nfce">
+          <span class="atalho__rotulo">
+            <strong>NFC-e</strong>
+            <span class="atalho__descricao">Nota Fiscal ao Consumidor — varejo</span>
+          </span>
+          <span class="atalho__seta" aria-hidden="true">↗</span>
+        </button>
+
+        <button class="atalho" data-portal="nfse">
+          <span class="atalho__rotulo">
+            <strong>NFS-e</strong>
+            <span class="atalho__descricao">Nota Fiscal de Serviços — Emissor Nacional</span>
+          </span>
+          <span class="atalho__seta" aria-hidden="true">↗</span>
+        </button>
+
+      </section>
+
+      <p class="painel__rodape-aviso" id="aviso" role="status" aria-live="polite"></p>
+    </main>
+
+    <footer class="painel__rodape">
+      <a href="#" id="link-configurar" class="painel__link-config">Configurar portais</a>
+    </footer>
+  </div>
+
+  <script type="module" src="taskpane.js"></script>
+</body>
+</html>

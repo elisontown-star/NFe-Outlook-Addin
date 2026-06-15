@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Entrando...</title>
+  <script src="https://alcdn.msauth.net/browser/3.18.0/js/msal-browser.min.js"
+          integrity="sha384-placeholder-verifique-o-hash-atual"
+          crossorigin="anonymous"></script>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <script src="./authConfig.js"></script>
+</head>
+<body>
+  <p>Conectando à sua conta Microsoft...</p>
+
+  <script>
+    /*
+      Fallback de SSO: usado apenas quando NAA não está disponível.
+      Executa o fluxo MSAL.js tradicional via redirect dentro do
+      diálogo do Office e envia o resultado de volta ao taskpane
+      via Office.context.ui.messageParent.
+    */
+    Office.onReady(async () => {
+      const pca = new msal.PublicClientApplication(msalConfig);
+      await pca.initialize();
+
+      // Trata o retorno do redirect, se já estivermos voltando do login
+      const resposta = await pca.handleRedirectPromise();
+
+      if (resposta && resposta.account) {
+        Office.context.ui.messageParent(
+          JSON.stringify({ conta: resposta.account })
+        );
+        return;
+      }
+
+      const contas = pca.getAllAccounts();
+      if (contas.length > 0) {
+        Office.context.ui.messageParent(
+          JSON.stringify({ conta: contas[0] })
+        );
+        return;
+      }
+
+      // Nenhuma conta em cache: inicia o redirect de login
+      try {
+        await pca.loginRedirect({ scopes: LOGIN_SCOPES });
+      } catch (erro) {
+        Office.context.ui.messageParent(
+          JSON.stringify({ erro: erro.message })
+        );
+      }
+    });
+  </script>
+</body>
+</html>
