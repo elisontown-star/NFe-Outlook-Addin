@@ -15,77 +15,34 @@
     janela própria do sistema operacional/navegador.
 */
 
-import { obterContaAtiva, login } from "./auth.js";
-
 // Edite estas URLs para apontar para os portais corretos da sua operação.
 // NF-e e NFC-e variam por estado; ajuste para a SEFAZ do seu UF.
-const PORTAIS = {
+var PORTAIS = {
   nfe: "https://www.nfe.fazenda.gov.br/portal/principal.aspx",
   nfce: "https://www.nfce.fazenda.gov.br/portal/principal.aspx",
   nfse: "https://www.nfse.gov.br/EmissorNacional/",
 };
 
-Office.onReady(() => {
-  document.querySelectorAll(".atalho").forEach((botao) => {
-    botao.addEventListener("click", () => {
-      const tipo = botao.getAttribute("data-portal");
+Office.onReady(function () {
+  var botoes = document.querySelectorAll(".atalho");
+  for (var i = 0; i < botoes.length; i++) {
+    botoes[i].addEventListener("click", function () {
+      var tipo = this.getAttribute("data-portal");
       abrirPortal(tipo);
     });
-  });
+  }
 
-  const linkConfigurar = document.getElementById("link-configurar");
-  linkConfigurar.addEventListener("click", (evento) => {
+  var linkConfigurar = document.getElementById("link-configurar");
+  linkConfigurar.addEventListener("click", function (evento) {
     evento.preventDefault();
     mostrarAviso(
       "Para alterar os portais, edite o arquivo taskpane.js (objeto PORTAIS)."
     );
   });
-
-  inicializarSessao();
 });
 
-/*
-  Verifica se há uma conta autenticada via NAA. Se houver, exibe o
-  nome/e-mail do usuário no cabeçalho. Caso contrário, exibe o botão
-  "Entrar" para que o usuário inicie o SSO manualmente.
-*/
-async function inicializarSessao() {
-  const statusElemento = document.getElementById("usuario-status");
-  const botaoEntrar = document.getElementById("botao-entrar");
-
-  try {
-    const conta = await obterContaAtiva();
-
-    if (conta) {
-      statusElemento.textContent = conta.username || conta.name || "Conectado";
-      botaoEntrar.hidden = true;
-    } else {
-      statusElemento.textContent = "Não conectado";
-      botaoEntrar.hidden = false;
-      botaoEntrar.addEventListener("click", async () => {
-        botaoEntrar.disabled = true;
-        botaoEntrar.textContent = "Entrando...";
-        try {
-          const novaConta = await login();
-          statusElemento.textContent = novaConta.username || novaConta.name || "Conectado";
-          botaoEntrar.hidden = true;
-        } catch (erro) {
-          mostrarAviso("Falha no login: " + erro.message);
-          botaoEntrar.disabled = false;
-          botaoEntrar.textContent = "Entrar";
-        }
-      });
-    }
-  } catch (erro) {
-    // MSAL/NAA pode não estar disponível em hosts mais antigos.
-    // O painel continua funcional sem SSO (apenas os atalhos de portal).
-    statusElemento.textContent = "";
-    console.warn("SSO indisponível neste host:", erro);
-  }
-}
-
 function abrirPortal(tipo) {
-  const url = PORTAIS[tipo];
+  var url = PORTAIS[tipo];
 
   if (!url) {
     mostrarAviso("Portal não configurado para este tipo de nota.");
@@ -98,16 +55,14 @@ function abrirPortal(tipo) {
   Office.context.ui.displayDialogAsync(
     url,
     { height: 80, width: 70, displayInIframe: false },
-    (resultado) => {
+    function (resultado) {
       if (resultado.status === Office.AsyncResultStatus.Failed) {
         // Fallback: caso o diálogo não possa ser aberto (algumas
         // configurações de tenant bloqueiam displayDialogAsync para
         // domínios externos), tenta abrir em nova aba do navegador.
-        const novaJanela = window.open(url, "_blank");
+        var novaJanela = window.open(url, "_blank");
         if (!novaJanela) {
-          mostrarAviso(
-            "Não foi possível abrir o portal. Copie o link: " + url
-          );
+          mostrarAviso("Não foi possível abrir o portal. Copie o link: " + url);
         } else {
           mostrarAviso("Portal aberto em nova aba.");
         }
@@ -119,13 +74,13 @@ function abrirPortal(tipo) {
   );
 }
 
-let timeoutAviso;
+var timeoutAviso;
 function mostrarAviso(mensagem) {
-  const elemento = document.getElementById("aviso");
+  var elemento = document.getElementById("aviso");
   elemento.textContent = mensagem;
 
   clearTimeout(timeoutAviso);
-  timeoutAviso = setTimeout(() => {
+  timeoutAviso = setTimeout(function () {
     elemento.textContent = "";
   }, 5000);
 }

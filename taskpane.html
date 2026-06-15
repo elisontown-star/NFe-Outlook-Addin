@@ -8,12 +8,6 @@
   <!-- Office JS é obrigatório em qualquer task pane -->
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 
-  <!-- MSAL.js: usado para SSO via Nested App Authentication (NAA) -->
-  <script src="https://alcdn.msauth.net/browser/3.18.0/js/msal-browser.min.js"
-          integrity="sha384-placeholder-verifique-o-hash-atual"
-          crossorigin="anonymous"></script>
-  <script src="authConfig.js"></script>
-
   <link rel="stylesheet" href="taskpane.css" />
 </head>
 <body>
@@ -27,8 +21,7 @@
         </div>
       </div>
       <div class="painel__usuario" id="painel-usuario">
-        <span id="usuario-status">Verificando sessão...</span>
-        <button id="botao-entrar" class="botao-entrar" hidden>Entrar</button>
+        <span id="usuario-status"></span>
       </div>
     </header>
 
@@ -96,6 +89,6 @@
     </footer>
   </div>
 
-  <script type="module" src="taskpane.js"></script>
+  <script src="taskpane.js"></script>
 </body>
 </html>
