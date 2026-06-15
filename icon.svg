@@ -1,21 +1,8 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <rect width="200" height="200" rx="24" fill="#003366"/>
-
-  <!-- Folha de papel -->
-  <rect x="52" y="32" width="96" height="136" rx="6" fill="#FFFFFF"/>
-
-  <!-- Linhas de texto do documento -->
-  <rect x="66" y="54" width="68" height="6" rx="3" fill="#D9E0E7"/>
-  <rect x="66" y="70" width="68" height="6" rx="3" fill="#D9E0E7"/>
-  <rect x="66" y="86" width="46" height="6" rx="3" fill="#D9E0E7"/>
-
-  <!-- Linha divisoria -->
-  <line x1="66" y1="104" x2="134" y2="104" stroke="#D9E0E7" stroke-width="2"/>
-
-  <rect x="66" y="116" width="68" height="6" rx="3" fill="#D9E0E7"/>
-  <rect x="66" y="132" width="34" height="6" rx="3" fill="#D9E0E7"/>
-
-  <!-- Selo / carimbo circular -->
-  <circle cx="124" cy="140" r="30" fill="#FFCC29" stroke="#003366" stroke-width="4"/>
-  <text x="124" y="148" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-weight="700" font-size="22" fill="#003366">NF</text>
+  <rect width="200" height="200" rx="28" fill="#FFFFFF"/>
+  <rect x="6" y="6" width="188" height="188" rx="24" fill="none" stroke="#E2E6EA" stroke-width="2"/>
+  <text x="100" y="100" text-anchor="middle" dominant-baseline="middle"
+        font-family="Arial, 'Segoe UI', sans-serif" font-weight="700" font-size="52" letter-spacing="-1">
+    <tspan fill="#4E8A52">NF</tspan><tspan fill="#E6A817">S</tspan><tspan fill="#2E5A9E">e</tspan>
+  </text>
 </svg>
