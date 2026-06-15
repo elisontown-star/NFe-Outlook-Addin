@@ -141,10 +141,29 @@ body {
   outline-offset: 2px;
 }
 
+.atalho__icone {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--azul-claro);
+  border-radius: 6px;
+  color: var(--azul);
+  margin-right: 12px;
+}
+
+.atalho__icone svg {
+  width: 20px;
+  height: 20px;
+}
+
 .atalho__rotulo {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1;
 }
 
 .atalho__rotulo strong {
