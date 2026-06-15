@@ -73,6 +73,16 @@ body {
   letter-spacing: 0.5px;
 }
 
+.painel__selo-img {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #FFFFFF;
+  object-fit: contain;
+  padding: 2px;
+}
+
 .painel__titulo {
   font-family: var(--fonte-titulo);
   font-size: 17px;
