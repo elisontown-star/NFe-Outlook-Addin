@@ -1,11 +1,10 @@
 /*
-  Add-in Emissor de NF — seleção de estado + atalhos para portais oficiais.
+  Add-in Emissor de NF — seleção de estado + Portal do Contribuinte.
 
   Fluxo:
   1. Usuário escolhe a UF (etapa 1)
-  2. Aparecem os botões NF-e / NFC-e / NFS-e (etapa 2)
-  3. NF-e e NFC-e abrem o portal da SEFAZ daquele estado
-     NFS-e abre o Emissor Nacional (nacional, não varia por estado)
+  2. Aparece um único botão "Portal do Contribuinte" (etapa 2)
+  3. O botão abre o portal do contribuinte da SEFAZ daquele estado
 
   Abertura das janelas:
   - Usa Office.context.ui.displayDialogAsync (pop-up dentro do Office).
@@ -13,51 +12,38 @@
     (X-Frame-Options); nesse caso o código cai para window.open.
 
   COMO EXPANDIR: adicione novos estados ao objeto PORTAIS abaixo,
-  seguindo o mesmo formato { nfe, nfce }. A NFS-e é nacional e fica
-  em PORTAL_NFSE.
+  seguindo o formato { nome, url } e inclua a sigla em ORDEM_UF.
 */
 
-// Portal nacional da NFS-e (Emissor Nacional) — igual para todos os estados.
-var PORTAL_NFSE = "https://www.nfse.gov.br/EmissorNacional/";
-
-// Portais oficiais das SEFAZ, por UF.
-// nfe  = portal de NF-e do estado
-// nfce = portal de NFC-e do estado
+// Portal do Contribuinte oficial de cada SEFAZ, por UF.
 var PORTAIS = {
   SP: {
     nome: "São Paulo",
-    nfe: "https://portal.fazenda.sp.gov.br/servicos/nfe",
-    nfce: "https://portal.fazenda.sp.gov.br/servicos/nfce",
+    url: "https://www.fazenda.sp.gov.br/PFE",
   },
   RJ: {
     nome: "Rio de Janeiro",
-    nfe: "https://portal.fazenda.rj.gov.br/dfe/",
-    nfce: "https://portal.fazenda.rj.gov.br/dfe/",
+    url: "https://atendimentodigitalrj.fazenda.rj.gov.br/login",
   },
   MG: {
     nome: "Minas Gerais",
-    nfe: "https://portalsped.fazenda.mg.gov.br/spedmg/nfe/",
-    nfce: "https://portalsped.fazenda.mg.gov.br/spedmg/nfce/",
+    url: "https://www2.fazenda.mg.gov.br/sol/",
   },
   RS: {
     nome: "Rio Grande do Sul",
-    nfe: "https://dfe-portal.svrs.rs.gov.br/NFE",
-    nfce: "https://dfe-portal.svrs.rs.gov.br/NFCE",
+    url: "https://www.sefaz.rs.gov.br/Receita/Portal",
   },
   PR: {
     nome: "Paraná",
-    nfe: "https://www.fazenda.pr.gov.br/servicos/EMPRESA/Nota-Fiscal-Eletronica-NF-e",
-    nfce: "https://www.fazenda.pr.gov.br/servicos/EMPRESA/Nota-Fiscal-de-Consumidor-Eletronica-NFC-e",
+    url: "https://receita.pr.gov.br/",
   },
   SC: {
     nome: "Santa Catarina",
-    nfe: "https://sat.sef.sc.gov.br/tax.NET/Sat.Dfe.Web/Default.aspx",
-    nfce: "https://sat.sef.sc.gov.br/nfce/consulta",
+    url: "https://sat.sef.sc.gov.br/",
   },
   BA: {
     nome: "Bahia",
-    nfe: "https://nfe.sefaz.ba.gov.br/servicos/nfe/default.aspx",
-    nfce: "https://nfe.sefaz.ba.gov.br/servicos/nfce/Modulos/Geral/NFCEC_consulta_chave_acesso.aspx",
+    url: "https://portal.sefaz.ba.gov.br/scripts/sat/login.asp",
   },
 };
 
@@ -72,6 +58,7 @@ Office.onReady(function () {
   var select = document.getElementById("select-uf");
   var btnContinuar = document.getElementById("btn-continuar");
   var btnTrocar = document.getElementById("btn-trocar-uf");
+  var btnPortal = document.getElementById("btn-portal");
 
   select.addEventListener("change", function () {
     btnContinuar.disabled = !select.value;
@@ -88,13 +75,9 @@ Office.onReady(function () {
     mostrarEtapaEstado();
   });
 
-  // Liga os botões de portal
-  var botoes = document.querySelectorAll(".atalho");
-  for (var i = 0; i < botoes.length; i++) {
-    botoes[i].addEventListener("click", function () {
-      abrirPortal(this.getAttribute("data-portal"));
-    });
-  }
+  btnPortal.addEventListener("click", function () {
+    abrirPortalContribuinte();
+  });
 });
 
 function popularSelectUf() {
@@ -120,18 +103,13 @@ function mostrarEtapaEstado() {
   document.getElementById("etapa-estado").hidden = false;
 }
 
-function abrirPortal(tipo) {
-  var url;
-
-  if (tipo === "nfse") {
-    // NFS-e é nacional
-    url = PORTAL_NFSE;
-  } else if (ufSelecionada && PORTAIS[ufSelecionada]) {
-    url = PORTAIS[ufSelecionada][tipo];
-  }
+function abrirPortalContribuinte() {
+  var url = ufSelecionada && PORTAIS[ufSelecionada]
+    ? PORTAIS[ufSelecionada].url
+    : null;
 
   if (!url) {
-    mostrarAviso("Portal não disponível para este estado/tipo.");
+    mostrarAviso("Portal não disponível para este estado.");
     return;
   }
 
