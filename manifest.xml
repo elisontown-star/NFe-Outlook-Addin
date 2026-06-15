@@ -10,35 +10,32 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Sua Empresa</ProviderName>
   <DefaultLocale>pt-BR</DefaultLocale>
-
-  <DisplayName DefaultValue="Emissor de NF" />
-  <Description DefaultValue="Atalhos rápidos para os portais oficiais de emissão de Nota Fiscal (NF-e, NFC-e e NFS-e)." />
-
-  <IconUrl DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-64.png" />
-  <HighResolutionIconUrl DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-128.png" />
-
-  <SupportUrl DefaultValue="https://github.com/elisontown-star/NFe-Outlook-Addin" />
+  <DisplayName DefaultValue="Emissor de NF"/>
+  <Description DefaultValue="Atalhos para os portais oficiais de emissao de Nota Fiscal (NF-e, NFC-e e NFS-e)."/>
+  <IconUrl DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-128.png"/>
+  <SupportUrl DefaultValue="https://github.com/elisontown-star/NFe-Outlook-Addin"/>
 
   <AppDomains>
-    <!-- Domínios além do de hospedagem do add-in que serão abertos via janelas (Office.context.ui.displayDialogAsync) -->
     <AppDomain>https://www.nfse.gov.br</AppDomain>
     <AppDomain>https://www.gov.br</AppDomain>
   </AppDomains>
 
   <Hosts>
-    <Host Name="Mailbox" />
+    <Host Name="Mailbox"/>
   </Hosts>
 
   <Requirements>
     <Sets>
-      <Set Name="Mailbox" MinVersion="1.1" />
+      <Set Name="Mailbox" MinVersion="1.1"/>
     </Sets>
   </Requirements>
 
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/taskpane.html" />
+        <SourceLocation DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/taskpane.html"/>
+        <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
   </FormSettings>
@@ -46,49 +43,38 @@
   <Permissions>ReadWriteItem</Permissions>
 
   <Rule xsi:type="RuleCollection" Mode="Or">
-    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read" />
-    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Edit" />
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
   </Rule>
 
   <DisableEntityHighlighting>false</DisableEntityHighlighting>
 
-  <!-- Define o painel (task pane) com versões mais recentes do manifest -->
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
     <Requirements>
       <bt:Sets DefaultMinVersion="1.3">
-        <bt:Set Name="Mailbox" />
+        <bt:Set Name="Mailbox"/>
       </bt:Sets>
     </Requirements>
-
     <Hosts>
       <Host xsi:type="MailHost">
         <DesktopFormFactor>
-          <FunctionFile resid="Commands.Url" />
-
+          <FunctionFile resid="Commands.Url"/>
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
             <OfficeTab id="TabDefault">
               <Group id="NfeGroup">
-                <Label resid="NfeGroup.Label" />
-                <Icon>
-                  <bt:Image size="16" resid="Icon.16x16" />
-                  <bt:Image size="32" resid="Icon.32x32" />
-                  <bt:Image size="80" resid="Icon.80x80" />
-                </Icon>
-
+                <Label resid="NfeGroup.Label"/>
                 <Control xsi:type="Button" id="NfeTaskpaneButton">
-                  <Label resid="NfeTaskpaneButton.Label" />
+                  <Label resid="NfeTaskpaneButton.Label"/>
                   <Supertip>
-                    <Title resid="NfeTaskpaneButton.Label" />
-                    <Description resid="NfeTaskpaneButton.Tooltip" />
+                    <Title resid="NfeTaskpaneButton.Label"/>
+                    <Description resid="NfeTaskpaneButton.Tooltip"/>
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="Icon.16x16" />
-                    <bt:Image size="32" resid="Icon.32x32" />
-                    <bt:Image size="80" resid="Icon.80x80" />
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
-                    <TaskpaneId>NfeTaskpane</TaskpaneId>
-                    <SourceLocation resid="Taskpane.Url" />
+                    <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
               </Group>
@@ -97,23 +83,22 @@
         </DesktopFormFactor>
       </Host>
     </Hosts>
-
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-16.png" />
-        <bt:Image id="Icon.32x32" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-32.png" />
-        <bt:Image id="Icon.80x80" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-80.png" />
+        <bt:Image id="Icon.16x16" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/commands.html" />
-        <bt:Url id="Taskpane.Url" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/taskpane.html" />
+        <bt:Url id="Commands.Url" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://elisontown-star.github.io/NFe-Outlook-Addin/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="NfeGroup.Label" DefaultValue="Notas Fiscais" />
-        <bt:String id="NfeTaskpaneButton.Label" DefaultValue="Emitir NF" />
+        <bt:String id="NfeGroup.Label" DefaultValue="Notas Fiscais"/>
+        <bt:String id="NfeTaskpaneButton.Label" DefaultValue="Emitir NF"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="NfeTaskpaneButton.Tooltip" DefaultValue="Abre o painel com atalhos para os portais oficiais de emissão de NF-e, NFC-e e NFS-e" />
+        <bt:String id="NfeTaskpaneButton.Tooltip" DefaultValue="Abre o painel com atalhos para os portais oficiais de emissao de NF-e, NFC-e e NFS-e"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
