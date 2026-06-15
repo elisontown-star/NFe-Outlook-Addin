@@ -1,17 +1,19 @@
 /*
-  Paleta inspirada em formulários fiscais brasileiros: papel timbrado,
-  tinta azul de carimbo e um verde institucional para confirmação.
-  Tudo discreto — o painel é uma ferramenta de bastidor, não vitrine.
+  Paleta institucional: azul corporativo (tom usado por Receita
+  Federal/SEFAZ em sistemas oficiais) com amarelo de destaque para
+  ações e selos. Fundo neutro claro para legibilidade em formulários.
 */
 :root {
-  --papel: #FAF8F4;
-  --tinta: #1F2937;
-  --tinta-suave: #6B7280;
-  --azul-carimbo: #1E3A5F;
-  --azul-carimbo-hover: #15293F;
-  --linha: #E2DFD8;
-  --verde-selo: #2F6F4E;
-  --fonte-titulo: "Georgia", "Times New Roman", serif;
+  --fundo: #F5F7FA;
+  --tinta: #1C2B39;
+  --tinta-suave: #5B6B7A;
+  --azul: #003366;
+  --azul-hover: #00264D;
+  --azul-claro: #E8F0F8;
+  --amarelo: #FFCC29;
+  --amarelo-escuro: #C9960C;
+  --linha: #D9E0E7;
+  --fonte-titulo: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
   --fonte-corpo: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -23,7 +25,7 @@ body {
   margin: 0;
   font-family: var(--fonte-corpo);
   color: var(--tinta);
-  background: var(--papel);
+  background: var(--fundo);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -32,51 +34,21 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 20px;
-  gap: 20px;
+  padding: 0;
+  gap: 0;
 }
 
 /* Cabeçalho ----------------------------------------------------- */
 
 .painel__cabecalho {
-  border-bottom: 2px solid var(--azul-carimbo);
-  padding-bottom: 14px;
+  background: var(--azul);
+  border-bottom: 4px solid var(--amarelo);
+  padding: 16px 20px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-}
-
-.painel__usuario {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--tinta-suave);
-  white-space: nowrap;
-}
-
-.botao-entrar {
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  color: #FFFFFF;
-  background: var(--azul-carimbo);
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.botao-entrar:hover {
-  background: var(--azul-carimbo-hover);
-}
-
-.botao-entrar:disabled {
-  opacity: 0.6;
-  cursor: default;
 }
 
 .painel__marca {
@@ -89,17 +61,16 @@ body {
   flex-shrink: 0;
   width: 40px;
   height: 40px;
-  border: 2px solid var(--azul-carimbo);
+  background: var(--amarelo);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--fonte-titulo);
   font-weight: 700;
-  font-size: 15px;
-  color: var(--azul-carimbo);
+  font-size: 14px;
+  color: var(--azul);
   letter-spacing: 0.5px;
-  transform: rotate(-3deg);
 }
 
 .painel__titulo {
@@ -107,13 +78,13 @@ body {
   font-size: 17px;
   font-weight: 700;
   margin: 0 0 2px;
-  color: var(--azul-carimbo);
+  color: #FFFFFF;
 }
 
 .painel__subtitulo {
   margin: 0;
   font-size: 12px;
-  color: var(--tinta-suave);
+  color: #C9D6E4;
 }
 
 /* Conteúdo -------------------------------------------------------- */
@@ -123,6 +94,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 20px;
 }
 
 .painel__instrucao {
@@ -145,19 +117,19 @@ body {
   padding: 14px 16px;
   background: #FFFFFF;
   border: 1px solid var(--linha);
-  border-left: 4px solid var(--azul-carimbo);
+  border-left: 4px solid var(--azul);
   border-radius: 4px;
   cursor: pointer;
   text-align: left;
-  transition: transform 0.08s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.08s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   font-family: inherit;
   color: var(--tinta);
 }
 
 .atalho:hover {
-  border-color: var(--azul-carimbo-hover);
-  border-left-color: var(--azul-carimbo-hover);
-  box-shadow: 0 2px 8px rgba(31, 41, 55, 0.08);
+  background: var(--azul-claro);
+  border-left-color: var(--amarelo-escuro);
+  box-shadow: 0 2px 8px rgba(0, 51, 102, 0.10);
 }
 
 .atalho:active {
@@ -165,7 +137,7 @@ body {
 }
 
 .atalho:focus-visible {
-  outline: 2px solid var(--azul-carimbo);
+  outline: 2px solid var(--azul);
   outline-offset: 2px;
 }
 
@@ -178,7 +150,8 @@ body {
 .atalho__rotulo strong {
   font-family: var(--fonte-titulo);
   font-size: 15px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  color: var(--azul);
 }
 
 .atalho__descricao {
@@ -188,7 +161,8 @@ body {
 
 .atalho__seta {
   font-size: 18px;
-  color: var(--azul-carimbo);
+  font-weight: 700;
+  color: var(--amarelo-escuro);
   flex-shrink: 0;
   margin-left: 12px;
 }
@@ -199,16 +173,51 @@ body {
   min-height: 18px;
   margin: 0;
   font-size: 12px;
-  color: var(--verde-selo);
+  color: var(--azul);
   font-weight: 600;
+}
+
+/* Usuário / login --------------------------------------------------- */
+
+.painel__usuario {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #C9D6E4;
+  white-space: nowrap;
+}
+
+.botao-entrar {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--azul);
+  background: var(--amarelo);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.botao-entrar:hover {
+  background: var(--amarelo-escuro);
+  color: #FFFFFF;
+}
+
+.botao-entrar:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 /* Rodapé ------------------------------------------------------------ */
 
 .painel__rodape {
   border-top: 1px solid var(--linha);
-  padding-top: 12px;
+  padding: 12px 20px;
   text-align: center;
+  background: #FFFFFF;
 }
 
 .painel__link-config {
@@ -218,6 +227,6 @@ body {
 }
 
 .painel__link-config:hover {
-  color: var(--azul-carimbo);
+  color: var(--azul);
   text-decoration: underline;
 }
