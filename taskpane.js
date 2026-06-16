@@ -242,4 +242,51 @@ function mostrarAviso(mensagem) {
       });
     });
   }
+
+  // ===================== Autopreenchimento por CNPJ =====================
+  function soDigitos(v) {
+    return (v || "").replace(/\D/g, "");
+  }
+
+  function autoPreencherCnpj(tipo) {
+    var prefixo = tipo === "prestador" ? "prestador" : "tomador";
+    var campoCnpj = form.querySelector("[name=" + prefixo + "_cnpj]");
+    var cnpj = soDigitos(campoCnpj.value);
+    if (cnpj.length !== 14) return;
+
+    var valorOriginal = campoCnpj.value;
+    campoCnpj.disabled = true;
+    campoCnpj.value = "Consultando...";
+
+    fetch(urlApi() + "/cnpj/" + cnpj)
+      .then(function (resp) {
+        campoCnpj.value = valorOriginal;
+        if (!resp.ok) throw new Error("CNPJ não encontrado");
+        return resp.json();
+      })
+      .then(function (d) {
+        if (tipo === "prestador") {
+          if (d.codigo_municipio_ibge)
+            form.querySelector("[name=prestador_codigo_municipio]").value = d.codigo_municipio_ibge;
+        } else {
+          if (d.razao_social)
+            form.querySelector("[name=tomador_razao_social]").value = d.razao_social;
+          if (d.email)
+            form.querySelector("[name=tomador_email]").value = d.email;
+        }
+        mostrarAviso("Dados de " + (d.razao_social || cnpj) + " carregados.");
+      })
+      .catch(function () {
+        campoCnpj.value = valorOriginal;
+        mostrarAviso("CNPJ não encontrado ou API indisponível.");
+      })
+      .finally(function () {
+        campoCnpj.disabled = false;
+      });
+  }
+
+  var cnpjPrest = form.querySelector("[name=prestador_cnpj]");
+  var cnpjTom = form.querySelector("[name=tomador_cnpj]");
+  if (cnpjPrest) cnpjPrest.addEventListener("blur", function () { autoPreencherCnpj("prestador"); });
+  if (cnpjTom) cnpjTom.addEventListener("blur", function () { autoPreencherCnpj("tomador"); });
 })();

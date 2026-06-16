@@ -503,3 +503,12 @@ body {
   margin: 0;
   max-height: 280px;
 }
+
+.dica-cnpj {
+  font-size: 12px;
+  color: var(--azul);
+  background: var(--azul-claro);
+  padding: 8px 10px;
+  border-radius: 5px;
+  margin: 0 0 4px;
+}
