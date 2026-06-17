@@ -143,28 +143,33 @@ function mostrarAviso(mensagem) {
 
 /* ===================== Navegação por abas ===================== */
 (function () {
-  var abaPortais = document.getElementById("aba-portais");
-  var abaEmitir = document.getElementById("aba-emitir");
-  var conteudoPortais = document.getElementById("conteudo-portais");
-  var conteudoEmitir = document.getElementById("conteudo-emitir");
+  // Pares aba->conteúdo
+  var mapa = [
+    { aba: "aba-portais", conteudo: "conteudo-portais" },
+    { aba: "aba-emitir", conteudo: "conteudo-emitir" },
+    { aba: "aba-consultar", conteudo: "conteudo-consultar" },
+  ];
 
-  function ativar(aba, conteudo, outraAba, outroConteudo) {
-    aba.classList.add("aba--ativa");
-    aba.setAttribute("aria-selected", "true");
-    outraAba.classList.remove("aba--ativa");
-    outraAba.setAttribute("aria-selected", "false");
-    conteudo.hidden = false;
-    outroConteudo.hidden = true;
-  }
-
-  if (abaPortais && abaEmitir) {
-    abaPortais.addEventListener("click", function () {
-      ativar(abaPortais, conteudoPortais, abaEmitir, conteudoEmitir);
-    });
-    abaEmitir.addEventListener("click", function () {
-      ativar(abaEmitir, conteudoEmitir, abaPortais, conteudoPortais);
+  function ativar(idAtivo) {
+    mapa.forEach(function (item) {
+      var aba = document.getElementById(item.aba);
+      var conteudo = document.getElementById(item.conteudo);
+      if (!aba || !conteudo) return;
+      var ativo = item.aba === idAtivo;
+      aba.classList.toggle("aba--ativa", ativo);
+      aba.setAttribute("aria-selected", ativo ? "true" : "false");
+      conteudo.hidden = !ativo;
     });
   }
+
+  mapa.forEach(function (item) {
+    var aba = document.getElementById(item.aba);
+    if (aba) {
+      aba.addEventListener("click", function () {
+        ativar(item.aba);
+      });
+    }
+  });
 })();
 
 /* ===================== Formulário NFS-e ===================== */
@@ -268,13 +273,14 @@ function mostrarAviso(mensagem) {
         if (tipo === "prestador") {
           if (d.codigo_municipio_ibge)
             form.querySelector("[name=prestador_codigo_municipio]").value = d.codigo_municipio_ibge;
+          mostrarAviso("Emissor: " + (d.razao_social || cnpj) + " (" + (d.municipio || "") + "/" + (d.uf || "") + "). Informe a Inscrição Municipal.");
         } else {
           if (d.razao_social)
             form.querySelector("[name=tomador_razao_social]").value = d.razao_social;
           if (d.email)
             form.querySelector("[name=tomador_email]").value = d.email;
+          mostrarAviso("Tomador: " + (d.razao_social || cnpj) + " carregado.");
         }
-        mostrarAviso("Dados de " + (d.razao_social || cnpj) + " carregados.");
       })
       .catch(function () {
         campoCnpj.value = valorOriginal;
@@ -289,4 +295,148 @@ function mostrarAviso(mensagem) {
   var cnpjTom = form.querySelector("[name=tomador_cnpj]");
   if (cnpjPrest) cnpjPrest.addEventListener("blur", function () { autoPreencherCnpj("prestador"); });
   if (cnpjTom) cnpjTom.addEventListener("blur", function () { autoPreencherCnpj("tomador"); });
+})();
+
+/* ===================== Aba Consultar Notas ===================== */
+(function () {
+  var conteudo = document.getElementById("conteudo-consultar");
+  if (!conteudo) return;
+
+  // URL do portal nacional de consulta de NFS-e
+  var PORTAL_CONSULTA = "https://www.nfse.gov.br/EmissorNacional/Notas/Emitidas";
+
+  var tipoSelecionado = "emitidas";
+
+  // Botão: abrir portal de consulta
+  var btnAbrir = document.getElementById("btn-abrir-consulta");
+  if (btnAbrir) {
+    btnAbrir.addEventListener("click", function () {
+      var url = tipoSelecionado === "recebidas"
+        ? "https://www.nfse.gov.br/EmissorNacional/Notas/Recebidas"
+        : "https://www.nfse.gov.br/EmissorNacional/Notas/Emitidas";
+      abrirJanela(url);
+    });
+  }
+
+  // Toggle Emitidas / Recebidas
+  var togglesBtns = conteudo.querySelectorAll(".toggle-tipo__btn");
+  for (var i = 0; i < togglesBtns.length; i++) {
+    togglesBtns[i].addEventListener("click", function () {
+      for (var j = 0; j < togglesBtns.length; j++) {
+        togglesBtns[j].classList.remove("toggle-tipo__btn--ativo");
+      }
+      this.classList.add("toggle-tipo__btn--ativo");
+      tipoSelecionado = this.getAttribute("data-tipo");
+    });
+  }
+
+  // Período rápido preenche as datas
+  var periodoRapido = document.getElementById("periodo-rapido");
+  if (periodoRapido) {
+    periodoRapido.addEventListener("change", function () {
+      var hoje = new Date();
+      var ini, fim;
+      if (this.value === "mes-atual") {
+        ini = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+        fim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+      } else if (this.value === "mes-anterior") {
+        ini = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
+        fim = new Date(hoje.getFullYear(), hoje.getMonth(), 0);
+      } else if (this.value === "ultimos-30") {
+        fim = new Date(hoje);
+        ini = new Date(hoje);
+        ini.setDate(ini.getDate() - 30);
+      } else {
+        return;
+      }
+      document.getElementById("data-inicial").value = formatarData(ini);
+      document.getElementById("data-final").value = formatarData(fim);
+    });
+  }
+
+  // Consultar via API
+  var btnConsultar = document.getElementById("btn-consultar-api");
+  if (btnConsultar) {
+    btnConsultar.addEventListener("click", function () {
+      var apiUrl = (document.getElementById("api-url")
+        ? document.getElementById("api-url").value.replace(/\/$/, "")
+        : "http://localhost:8000");
+      var dataIni = document.getElementById("data-inicial").value;
+      var dataFim = document.getElementById("data-final").value;
+
+      if (!dataIni || !dataFim) {
+        mostrarAviso("Informe o período (data inicial e final).");
+        return;
+      }
+
+      var resultado = document.getElementById("resultado-consulta");
+      var lista = document.getElementById("consulta-lista");
+      btnConsultar.disabled = true;
+      btnConsultar.textContent = "Consultando...";
+
+      var url = apiUrl + "/nfse/consultar?tipo=" + tipoSelecionado +
+        "&data_inicial=" + dataIni + "&data_final=" + dataFim;
+
+      fetch(url)
+        .then(function (resp) {
+          if (!resp.ok) return resp.json().then(function (e) { throw e; });
+          return resp.json();
+        })
+        .then(function (data) {
+          renderizarNotas(data.notas || []);
+          resultado.hidden = false;
+          document.getElementById("consulta-titulo").textContent =
+            (data.notas ? data.notas.length : 0) + " nota(s) — " + tipoSelecionado;
+        })
+        .catch(function (err) {
+          var msg = (err && err.detail) ? err.detail : "Requer certificado configurado na API.";
+          renderizarVazio(typeof msg === "string" ? msg : "Erro na consulta.");
+          resultado.hidden = false;
+        })
+        .finally(function () {
+          btnConsultar.disabled = false;
+          btnConsultar.textContent = "Consultar notas";
+        });
+    });
+  }
+
+  function renderizarNotas(notas) {
+    var lista = document.getElementById("consulta-lista");
+    if (!notas.length) {
+      renderizarVazio("Nenhuma nota encontrada no período.");
+      return;
+    }
+    var html = "";
+    notas.forEach(function (n) {
+      html += '<div class="nota-item">' +
+        '<div class="nota-item__linha1"><span>' + (n.numero || "s/ número") +
+        '</span><span class="nota-item__valor">R$ ' + (n.valor || "0,00") + '</span></div>' +
+        '<div class="nota-item__linha2">' + (n.tomador || n.prestador || "") +
+        ' · ' + (n.data || "") + '</div></div>';
+    });
+    lista.innerHTML = html;
+  }
+
+  function renderizarVazio(msg) {
+    document.getElementById("consulta-lista").innerHTML =
+      '<div class="consulta-vazia">' + msg + '</div>';
+  }
+
+  function formatarData(d) {
+    var mes = String(d.getMonth() + 1).padStart(2, "0");
+    var dia = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + mes + "-" + dia;
+  }
+
+  function abrirJanela(url) {
+    if (typeof Office !== "undefined" && Office.context && Office.context.ui) {
+      Office.context.ui.displayDialogAsync(url, { height: 80, width: 70, displayInIframe: false }, function (r) {
+        if (r.status === Office.AsyncResultStatus.Failed) {
+          window.open(url, "_blank");
+        }
+      });
+    } else {
+      window.open(url, "_blank");
+    }
+  }
 })();

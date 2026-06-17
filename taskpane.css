@@ -512,3 +512,106 @@ body {
   border-radius: 5px;
   margin: 0 0 4px;
 }
+
+/* ===================== Aba Consultar ===================== */
+.passo {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.passo__num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.passo__corpo { flex: 1; }
+.passo__corpo > strong {
+  font-size: 14px;
+  color: var(--azul);
+  display: block;
+  margin-bottom: 6px;
+}
+.passo__txt {
+  font-size: 12px;
+  color: var(--tinta-suave);
+  margin: 0 0 8px;
+}
+.btn-link-portal {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--azul);
+  background: transparent;
+  border: 1px solid var(--azul);
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.btn-link-portal:hover { background: var(--azul); color: #FFFFFF; }
+
+.toggle-tipo {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--linha);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.toggle-tipo__btn {
+  flex: 1;
+  padding: 9px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-suave);
+  background: #FFFFFF;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.toggle-tipo__btn--ativo {
+  background: var(--azul);
+  color: #FFFFFF;
+}
+
+.periodo {
+  display: flex;
+  gap: 10px;
+}
+.periodo .campo-form { flex: 1; }
+
+.resultado-consulta { margin-top: 8px; }
+.nota-item {
+  border: 1px solid var(--linha);
+  border-left: 3px solid var(--azul);
+  border-radius: 5px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.nota-item__linha1 {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  color: var(--tinta);
+}
+.nota-item__valor { color: var(--verde-selo, #2F6F4E); }
+.nota-item__linha2 {
+  font-size: 12px;
+  color: var(--tinta-suave);
+  margin-top: 2px;
+}
+.consulta-vazia {
+  font-size: 13px;
+  color: var(--tinta-suave);
+  text-align: center;
+  padding: 16px;
+}

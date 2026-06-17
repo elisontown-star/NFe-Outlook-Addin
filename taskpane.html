@@ -27,7 +27,8 @@
 
     <nav class="abas" role="tablist">
       <button class="aba aba--ativa" id="aba-portais" role="tab" aria-selected="true">Portais</button>
-      <button class="aba" id="aba-emitir" role="tab" aria-selected="false">Emitir NFS-e</button>
+      <button class="aba" id="aba-emitir" role="tab" aria-selected="false">Emitir</button>
+      <button class="aba" id="aba-consultar" role="tab" aria-selected="false">Consultar</button>
     </nav>
 
     <main class="painel__conteudo">
@@ -93,12 +94,12 @@
               <input name="prestador_cnpj" placeholder="00000000000000" required />
             </label>
             <label class="campo-form">
-              <span>Inscrição Municipal *</span>
-              <input name="prestador_inscricao_municipal" placeholder="123456" required />
+              <span>Inscrição Municipal</span>
+              <input name="prestador_inscricao_municipal" placeholder="(digite manualmente)" />
             </label>
             <label class="campo-form">
-              <span>Código do Município (IBGE) *</span>
-              <input name="prestador_codigo_municipio" placeholder="3550308" required />
+              <span>Código do Município (IBGE)</span>
+              <input name="prestador_codigo_municipio" placeholder="preenchido pelo CNPJ" />
             </label>
           </fieldset>
 
@@ -161,12 +162,78 @@
         </div>
       </div>
 
+      <!-- ===================== ABA 3: CONSULTAR NOTAS ===================== -->
+      <div class="painel-aba" id="conteudo-consultar" hidden>
+
+        <div class="passo">
+          <span class="passo__num">1</span>
+          <div class="passo__corpo">
+            <strong>Acesse o portal nacional</strong>
+            <p class="passo__txt">Faça login com seu certificado ou gov.br para baixar as notas.</p>
+            <button class="btn-link-portal" id="btn-abrir-consulta">Abrir portal de consulta ↗</button>
+          </div>
+        </div>
+
+        <div class="passo">
+          <span class="passo__num">2</span>
+          <div class="passo__corpo">
+            <strong>Tipo de NFS-e</strong>
+            <div class="toggle-tipo">
+              <button type="button" class="toggle-tipo__btn toggle-tipo__btn--ativo" data-tipo="emitidas">Emitidas</button>
+              <button type="button" class="toggle-tipo__btn" data-tipo="recebidas">Recebidas</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="passo">
+          <span class="passo__num">3</span>
+          <div class="passo__corpo">
+            <strong>Período</strong>
+            <div class="periodo">
+              <label class="campo-form">
+                <span>Data inicial</span>
+                <input type="date" id="data-inicial" />
+              </label>
+              <label class="campo-form">
+                <span>Data final</span>
+                <input type="date" id="data-final" />
+              </label>
+            </div>
+            <label class="campo-form">
+              <span>Período rápido</span>
+              <select id="periodo-rapido" class="campo-uf__select">
+                <option value="">Personalizado</option>
+                <option value="mes-atual">Mês atual</option>
+                <option value="mes-anterior">Mês anterior</option>
+                <option value="ultimos-30">Últimos 30 dias</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="passo">
+          <span class="passo__num">4</span>
+          <div class="passo__corpo">
+            <strong>Consultar via API</strong>
+            <p class="passo__txt">Lista as notas direto pela API (requer certificado configurado).</p>
+            <button class="btn-primario" id="btn-consultar-api">Consultar notas</button>
+          </div>
+        </div>
+
+        <div class="resultado-consulta" id="resultado-consulta" hidden>
+          <div class="resultado-dps__cabecalho">
+            <strong id="consulta-titulo">Notas encontradas</strong>
+          </div>
+          <div id="consulta-lista"></div>
+        </div>
+      </div>
+
       <p class="painel__rodape-aviso" id="aviso" role="status" aria-live="polite"></p>
     </main>
 
     <footer class="painel__rodape">
       <span class="painel__rodape-info">Portais oficiais das SEFAZ</span>
-      <span class="painel__versao">v1.4.0</span>
+      <span class="painel__versao">v1.5.0</span>
     </footer>
   </div>
 
